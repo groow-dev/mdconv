@@ -6,7 +6,7 @@ use std::io::prelude::*;
 
 /// A simple markdown to html converter
 #[derive(Clap)]
-#[clap(version = "0.1.0", author = "groow-dev")]
+#[clap(version = "0.2.0", author = "groow-dev")]
 struct Opts {
     /// Sets the markdown input file
     #[clap(short)]

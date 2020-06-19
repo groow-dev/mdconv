@@ -7,7 +7,7 @@
 Pre-built binaries are available [on the GitHub Releases tab](https://github.com/groow-dev/mdconv/releases).
 
 ```console
-# install from crates.io
+# install
 $ cargo install mdconv
 
 # upgrade
