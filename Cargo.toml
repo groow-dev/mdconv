@@ -3,6 +3,7 @@ name = "mdconv"
 description = "A simple cli markdown to html converter"
 homepage = "https://github.com/groow-dev/mdconv"
 documentation = "https://github.com/groow-dev/mdconv"
+readme = "README.md"
 repository = "https://github.com/groow-dev/mdconv"
 version = "0.1.0"
 authors = ["Tobias Tschinkowitz <tobias.tschinkowitz@icloud.com>"]
