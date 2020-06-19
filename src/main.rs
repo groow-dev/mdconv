@@ -1,6 +1,7 @@
 use clap::Clap;
 use comrak::{markdown_to_html, ComrakOptions};
 use std::fs;
+use std::io;
 use std::io::prelude::*;
 
 /// A simple markdown to html converter
@@ -9,26 +10,41 @@ use std::io::prelude::*;
 struct Opts {
     /// Sets the markdown input file
     #[clap(short)]
-    input: String,
+    input: Option<String>,
     /// Sets the html output file
     #[clap(short)]
-    output: String,
+    output: Option<String>,
 }
 
-fn main() {
+fn main() -> std::io::Result<()> {
     let opts: Opts = Opts::parse();
 
-    let markdown_content = fs::read_to_string(&opts.input)
-        .unwrap_or_else(|_| panic!(format!("Couldn't open file: {}", opts.input)));
-
-    let html_content = markdown_to_html(&markdown_content, &ComrakOptions::default());
-
-    let mut html_file = match fs::File::create(&opts.output) {
-        Err(e) => panic!("Couldn't create {}: {}", opts.output, e),
-        Ok(html_file) => html_file,
-    };
-
-    if let Err(e) = html_file.write_all(html_content.as_bytes()) {
-        panic!("Couldn't write to {}: {}", &opts.output, e)
+    match (opts.input, opts.output) {
+        (Some(input), Some(output)) => {
+            let markdown_content = fs::read_to_string(&input)?;
+            let html_content = markdown_to_html(&markdown_content, &ComrakOptions::default());
+            let mut html_file = fs::File::create(&output)?;
+            html_file.write_all(html_content.as_bytes())?
+        }
+        (Some(input), None) => {
+            let markdown_content = fs::read_to_string(&input)?;
+            let html_content = markdown_to_html(&markdown_content, &ComrakOptions::default());
+            io::stdout().write_all(html_content.as_bytes())?;
+        }
+        (None, Some(output)) => {
+            let mut markdown_content = String::new();
+            io::stdin().read_to_string(&mut markdown_content)?;
+            let html_content = markdown_to_html(&markdown_content, &ComrakOptions::default());
+            let mut html_file = fs::File::create(&output)?;
+            html_file.write_all(html_content.as_bytes())?
+        }
+        (None, None) => {
+            let mut markdown_content = String::new();
+            io::stdin().read_to_string(&mut markdown_content)?;
+            let html_content = markdown_to_html(&markdown_content, &ComrakOptions::default());
+            io::stdout().write_all(html_content.as_bytes())?;
+        }
     }
+
+    Ok(())
 }
