@@ -1,6 +1,6 @@
 [package]
 name = "mdconv"
-description = "A simple markdown to html converter"
+description = "A simple cli markdown to html converter"
 homepage = "https://github.com/groow-dev/mdconv"
 documentation = "https://github.com/groow-dev/mdconv"
 repository = "https://github.com/groow-dev/mdconv"
