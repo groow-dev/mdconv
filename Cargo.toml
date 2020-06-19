@@ -1,0 +1,16 @@
+[package]
+name = "mdconv"
+description = "A simple markdown to html converter"
+homepage = "https://github.com/groow-dev/mdconv"
+documentation = "https://github.com/groow-dev/mdconv"
+repository = "https://github.com/groow-dev/mdconv"
+version = "0.1.0"
+authors = ["Tobias Tschinkowitz <tobias.tschinkowitz@icloud.com>"]
+categories = ["command-line-utilities"]
+keywords = ["markdown", "html", "converter"]
+edition = "2018"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+clap = "3.0.0-beta.1"
+comrak = "0.7"
