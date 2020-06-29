@@ -1,48 +1,61 @@
-use clap::Clap;
-use comrak::{markdown_to_html, ComrakOptions};
+use clap::{crate_authors, crate_description, crate_name, crate_version, App, Arg};
+use pulldown_cmark::{html, Options, Parser};
 use std::fs;
-use std::io;
 use std::io::prelude::*;
 
-/// A simple markdown to html converter
-#[derive(Clap)]
-#[clap(version = "0.2.0", author = "groow-dev")]
-struct Opts {
-    /// Sets the markdown input file
-    #[clap(short)]
-    input: Option<String>,
-    /// Sets the html output file
-    #[clap(short)]
-    output: Option<String>,
-}
-
 fn main() -> std::io::Result<()> {
-    let opts: Opts = Opts::parse();
+    let matches = App::new(crate_name!())
+        .version(crate_version!())
+        .author(crate_authors!())
+        .about(crate_description!())
+        .arg(
+            Arg::with_name("input")
+                .value_name("FILE")
+                .help("Markdown input file")
+                .short("i")
+                .long("input")
+                .takes_value(true)
+                .required(false),
+        )
+        .arg(
+            Arg::with_name("output")
+                .value_name("FILE")
+                .help("HTML output file")
+                .short("o")
+                .long("output")
+                .takes_value(true)
+                .required(false),
+        )
+        .get_matches();
 
-    match (opts.input, opts.output) {
+    match (matches.value_of("input"), matches.value_of("output")) {
         (Some(input), Some(output)) => {
             let markdown_content = fs::read_to_string(&input)?;
-            let html_content = markdown_to_html(&markdown_content, &ComrakOptions::default());
-            let mut html_file = fs::File::create(&output)?;
-            html_file.write_all(html_content.as_bytes())?
+            let options = Options::all();
+            let parser = Parser::new_ext(&markdown_content, options);
+            let html_file = fs::File::create(&output)?;
+            html::write_html(html_file, parser)?;
         }
         (Some(input), None) => {
             let markdown_content = fs::read_to_string(&input)?;
-            let html_content = markdown_to_html(&markdown_content, &ComrakOptions::default());
-            io::stdout().write_all(html_content.as_bytes())?;
+            let options = Options::all();
+            let parser = Parser::new_ext(&markdown_content, options);
+            html::write_html(std::io::stdout(), parser)?;
         }
         (None, Some(output)) => {
             let mut markdown_content = String::new();
-            io::stdin().read_to_string(&mut markdown_content)?;
-            let html_content = markdown_to_html(&markdown_content, &ComrakOptions::default());
-            let mut html_file = fs::File::create(&output)?;
-            html_file.write_all(html_content.as_bytes())?
+            std::io::stdin().read_to_string(&mut markdown_content)?;
+            let options = Options::all();
+            let parser = Parser::new_ext(&markdown_content, options);
+            let html_file = fs::File::create(&output)?;
+            html::write_html(html_file, parser)?;
         }
         (None, None) => {
             let mut markdown_content = String::new();
-            io::stdin().read_to_string(&mut markdown_content)?;
-            let html_content = markdown_to_html(&markdown_content, &ComrakOptions::default());
-            io::stdout().write_all(html_content.as_bytes())?;
+            std::io::stdin().read_to_string(&mut markdown_content)?;
+            let options = Options::all();
+            let parser = Parser::new_ext(&markdown_content, options);
+            html::write_html(std::io::stdout(), parser)?;
         }
     }
 

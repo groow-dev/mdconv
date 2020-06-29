@@ -5,7 +5,7 @@ homepage = "https://github.com/groow-dev/mdconv"
 documentation = "https://github.com/groow-dev/mdconv"
 readme = "README.md"
 repository = "https://github.com/groow-dev/mdconv"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Tobias Tschinkowitz <tobias.tschinkowitz@icloud.com>"]
 categories = ["command-line-utilities"]
 keywords = ["markdown", "html", "converter"]
@@ -13,5 +13,5 @@ edition = "2018"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-clap = "3.0.0-beta.1"
-comrak = "0.7"
+clap = "2.33.1"
+pulldown-cmark = "0.7.1"
